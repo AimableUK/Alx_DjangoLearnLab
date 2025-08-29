@@ -1,6 +1,7 @@
 # Update the book's title
-b.title = "Nineteen Eighty-Four"
-b.save()
+book = Book.objects.get()
+book.title = "the real Gen-Z
+book.save()
 
 # Verify update
 Book.objects.get(id=b.id).title
