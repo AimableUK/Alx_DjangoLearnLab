@@ -1,5 +1,9 @@
 # Delete the book instance
-b.delete()
+from bookshelf.models import Book
+book = Book.objects.all()
+
+
+book.delete()
 
 # Verify deletion
 Book.objects.all()
