@@ -5,7 +5,7 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_models.settings")
 django.setup()
 
-from django_models.relationship_app.models import Author, Book, Library, Librarian
+from LibraryProject.relationship_app.models import Author, Book, Library, Librarian
 
 
 def run_queries():
