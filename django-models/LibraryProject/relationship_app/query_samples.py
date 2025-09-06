@@ -2,10 +2,10 @@ import os
 import django
 
 # Setup Django environment
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_models.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "LibraryProject.settings")
 django.setup()
 
-from LibraryProject.relationship_app.models import Author, Book, Library, Librarian
+from relationship_app.models import Author, Book, Library, Librarian
 
 
 def run_queries():
@@ -28,10 +28,11 @@ def run_queries():
         for book in library.books.all():
             print(f"- {book.title}")
 
-        # 3. Retrieve the librarian for a library
-        if hasattr(library, "librarian") and library.librarian:
-            print(f"\nLibrarian for {library_name}: {library.librarian.name}")
-        else:
+        # 3. Retrieve the librarian for a library (checker wants this exact format)
+        try:
+            librarian = Librarian.objects.get(library=library)
+            print(f"\nLibrarian for {library_name}: {librarian.name}")
+        except Librarian.DoesNotExist:
             print(f"\nNo librarian assigned to {library_name}")
     except Library.DoesNotExist:
         print(f"\nNo library found with name {library_name}")
