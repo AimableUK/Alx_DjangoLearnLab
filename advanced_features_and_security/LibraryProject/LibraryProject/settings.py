@@ -58,6 +58,17 @@ MIDDLEWARE = [
 ]
 
 
+# --- HTTPS / Security settings (production) ---
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = os.environ.get("DJANGO_SECURE_SSL_REDIRECT", "True") == "True"
+
+# HTTP Strict Transport Security (HSTS)
+# 31536000 seconds = 1 year; use lower during initial rollout (e.g., 60)
+SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_SECURE_HSTS_SECONDS", "31536000"))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get("DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", "True") == "True"
+SECURE_HSTS_PRELOAD = os.environ.get("DJANGO_SECURE_HSTS_PRELOAD", "True") == "True"
+
+
 # Cookies over HTTPS only (production)
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
@@ -66,6 +77,9 @@ SESSION_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 
 # HSTS (only enable when you serve over HTTPS and understand HSTS)
 SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_SECURE_HSTS_SECONDS", 0))  # e.g. 31536000 in production
