@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 from .models import Post
-from .models import Book, BookForm, ExampleForm
+from .models import Book, BookForm
 from .forms import BookSearchForm
-
+from .forms import ExampleForm
 
 
 def book_list(request):
