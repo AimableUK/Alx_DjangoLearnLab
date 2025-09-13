@@ -1,0 +1,15 @@
+<!-- bookshelf/templates/bookshelf/form_example.html -->
+{% extends "base.html" %}
+{% block content %}
+<h2>Create Book</h2>
+<form method="post" action="{% url 'book_create' %}">
+  {% csrf_token %}
+  <label for="title">Title</label>
+  <input id="title" name="title" type="text" required maxlength="255">
+
+  <label for="author">Author</label>
+  <input id="author" name="author" type="text" required maxlength="255">
+
+  <button type="submit">Create</button>
+</form>
+{% endblock %}

@@ -1,14 +1,56 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 from .models import Post
-from .models import Book
+from .models import Book, BookForm
+from .forms import BookSearchForm
 
 
 
 def book_list(request):
+    """
+    View that returns a list of books.
+    Exposes 'books' queryset and a search form.
+    Uses Django ORM properly (no raw SQL with string interpolation).
+    """
+    form = BookSearchForm(request.GET or None)
     books = Book.objects.all()
-    return render(request, "bookshelf/book_list.html", {"books": books})
 
+    if form.is_valid():
+        q = form.cleaned_data.get("q")
+        if q:
+            # Safe ORM filtering — parameterized by Django ORM (prevents SQL injection)
+            # Using __icontains for case-insensitive containment search.
+            books = books.filter(title__icontains=q) | books.filter(author__icontains=q)
+
+    context = {"books": books, "form": form}
+    return render(request, "bookshelf/book_list.html", context)
+
+
+@permission_required('bookshelf.can_create', raise_exception=True)
+def book_create(request):
+    # Example of using Django forms to validate input (use ModelForm in real app)
+    if request.method == "POST":
+        # Prefer using ModelForm -- not shown here for brevity
+        title = request.POST.get("title", "").strip()
+        author = request.POST.get("author", "").strip()
+        if title and author:
+            Book.objects.create(title=title, author=author)
+            return redirect("book_list")
+    return render(request, "bookshelf/form_example.html")
+
+
+
+@permission_required('bookshelf.can_edit', raise_exception=True)
+def edit_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == "POST":
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect("book_list")
+    else:
+        form = BookForm(instance=book)
+    return render(request, "bookshelf/book_form.html", {"form": form})
 
 # View posts
 @permission_required('models.can_view', raise_exception=True)
