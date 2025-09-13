@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 from .models import Post
-from .models import Book, BookForm
+from .models import Book, BookForm, ExampleForm
 from .forms import BookSearchForm
 
 
@@ -38,7 +38,23 @@ def book_create(request):
             return redirect("book_list")
     return render(request, "bookshelf/form_example.html")
 
+def form_example(request):
+    if request.method == "POST":
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # safely access cleaned data
+            name = form.cleaned_data["name"]
+            email = form.cleaned_data["email"]
+            message = form.cleaned_data["message"]
+            # here you would save or process the data
+            return render(request, "bookshelf/form_example.html", {
+                "form": ExampleForm(), 
+                "success": True
+            })
+    else:
+        form = ExampleForm()
 
+    return render(request, "bookshelf/form_example.html", {"form": form})
 
 @permission_required('bookshelf.can_edit', raise_exception=True)
 def edit_book(request, pk):
