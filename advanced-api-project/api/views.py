@@ -33,6 +33,7 @@ class UpdateView(generics.UpdateAPIView):
 
 class DeleteView(generics.DestroyAPIView):
     serializer_class = BookSerializer
+    queryset = Book.objects.all()
     lookup_field= 'pk'
     permission_classes = [IsAuthenticated]
     
