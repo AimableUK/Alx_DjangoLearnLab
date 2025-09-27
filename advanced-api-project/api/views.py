@@ -2,8 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from .serializers import BookSerializer
 from .models import Book
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 class ListView(generics.ListAPIView):
     serializer_class = BookSerializer
