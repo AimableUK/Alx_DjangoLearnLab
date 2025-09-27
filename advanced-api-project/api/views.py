@@ -4,6 +4,7 @@ from .serializers import BookSerializer
 from .models import Book
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters import rest_framework
 
 class ListView(generics.ListAPIView):
     serializer_class = BookSerializer
