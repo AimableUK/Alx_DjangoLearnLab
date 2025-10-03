@@ -35,6 +35,17 @@ def login(request):
     
     return render(request, 'blog/login.html')
 
+def register(request):
+    
+    return render(request, 'blog/register.html', )
+
+
 def blogs(request):
     
     return render(request, 'blog/blogs.html', )
+
+
+def profile(request):
+    
+    return render(request, 'blog/profile.html', )
+
