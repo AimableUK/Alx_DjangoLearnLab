@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth.decorators import login_required
+from .forms import UserEditForm
 
 User = get_user_model()
 
@@ -42,10 +44,28 @@ def register(request):
 
 def blogs(request):
     
+    
+    
     return render(request, 'blog/blogs.html', )
 
 
+@login_required
 def profile(request):
+    user = request.user
+    if request.user == "POST":
+        form = UserEditForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+        
+        else:
+            form = UserEditForm(instance=user)
+        
     
-    return render(request, 'blog/profile.html', )
+        context = {
+            'form': form,
+            'user': user,
+        }
+    context = {}
+    return render(request, 'blog/profile.html', context)
 
