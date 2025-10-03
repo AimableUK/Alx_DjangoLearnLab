@@ -1,3 +1,40 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
-# Create your views here.
+User = get_user_model()
+
+
+
+def login(request):
+    
+    if request.method == "POST":
+        username = request.POST.get('username', '')
+        password = request.POST.get('pswd', '')
+        print(username, password)
+        errors = []
+        
+        if not username:
+            errors.append("username required")
+        if not password:
+            errors.append('Password is required') 
+            
+        if not errors:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                auth_login(request, user)
+                redirect('/')
+            else:
+                errors.append("Invalid username or password.")
+        
+        context = {
+            'errors': errors,
+            'username': username,
+        }
+        return render(request, 'blog/login.html', context)
+    
+    return render(request, 'blog/login.html')
+
+def blogs(request):
+    
+    return render(request, 'blog/blogs.html', )
