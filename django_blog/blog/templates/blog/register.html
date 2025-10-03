@@ -1,3 +1,3 @@
 {% extends "blog/base.html" %} {% block content %}
-{% include "blog/auth.html" %}
+{% include "blog/auth.html" %} {% csrf_token %}
 {% endblock %}
