@@ -8,6 +8,9 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .models import Post, Comment
+from taggit.models import Tag
+from django.db.models import Q
+
 
 User = get_user_model()
 
@@ -135,7 +138,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
     
 # Update an existing comment
-class CommentUpdateView(LoginRequiredMixin, CreateView):
+class CommentUpdateView(LoginRequiredMixin, UpdateView):
     model = Comment
     form_class = CommentForm
     template_name = ''
@@ -145,7 +148,7 @@ class CommentUpdateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 # Delete a comment
-class CommentDeleteView(LoginRequiredMixin, CreateView):
+class CommentDeleteView(LoginRequiredMixin, DeleteView):
     model = Comment
     template_name = ''
     success_url = reverse_lazy('post-list')
@@ -201,3 +204,20 @@ def CommentDeleteView(request, pk):
         comment.delete()
         return redirect('post_detail', pk=post_id)
     return render(request, 'blog/delete_comment.html', {'comment': comment})
+
+
+def posts_by_tag(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    posts = Post.objects.filter(tags__in=[tag])
+    return render(request, 'blog/posts_by_tag.html', {'tag': tag, 'posts': posts})
+
+def search_posts(request):
+    query = request.GET.get('q')
+    posts = Post.objects.all()
+    if query:
+        posts = posts.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+    return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})

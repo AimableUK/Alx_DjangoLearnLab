@@ -26,6 +26,16 @@
     </header>
 
     <div class="content">
+      <form action="{% url 'search_posts' %}" method="get" class="search-form">
+        <input
+          type="text"
+          name="q"
+          placeholder="Search posts..."
+          value="{{ request.GET.q }}"
+        />
+        <button type="submit">Search</button>
+      </form>
+
       {% block content %}
       <!-- Page-specific content goes here -->
       {% endblock %}
